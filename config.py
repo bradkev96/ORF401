@@ -12,7 +12,7 @@ OPENID_PROVIDERS = [
     {'name': 'Flickr', 'url': 'http://www.flickr.com/<username>'},
     {'name': 'MyOpenID', 'url': 'https://www.myopenid.com'}]
 
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:button16@localhost/BucketList'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:Gmail2.0rcl@localhost/bucketlist'
 #SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_RECORD_QUERIES = True

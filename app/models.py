@@ -84,7 +84,7 @@ class User(db.Model):
 
     def avatar(self, size): # we don't actually use the "size" parameter
         avatar_url = self.avatar_url
-        if avatar_url == "":
+        if avatar_url is None:
             return "/static/img/default.png"
         return avatar_url
 

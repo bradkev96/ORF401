@@ -1,5 +1,5 @@
-import sys, json
-from flask import render_template, flash, redirect, session, url_for, request, \
+import sys, json, os, boto3
+from flask import Flask, render_template, flash, redirect, session, url_for, request, \
     g, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_sqlalchemy import get_debug_queries
@@ -207,6 +207,7 @@ def edit():
     if form.validate_on_submit():
         g.user.nickname = form.nickname.data
         g.user.about_me = form.about_me.data
+        g.user.avatar_url = form.avatar_url.data
         db.session.add(g.user)
         db.session.commit()
         flash(gettext('Your changes have been saved.'))
@@ -214,7 +215,39 @@ def edit():
     elif request.method != "POST":
         form.nickname.data = g.user.nickname
         form.about_me.data = g.user.about_me
-    return render_template('edit.html', form=form)
+        form.avatar_url.data = g.user.avatar_url
+    return render_template('edit.html', form=form, user=g.user)
+
+
+@app.route('/sign_s3/')
+def sign_s3():
+    S3_BUCKET = 'outandaboutuserimages'
+
+    app.logger.info(request.args)
+    file_name = request.args.get('file_name')
+    file_type = request.args.get('file_type')
+
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id='AKIAJT3ZCH77G2AVYAPQ',
+        aws_secret_access_key='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',
+    )
+
+    presigned_post = s3.generate_presigned_post(
+        Bucket = S3_BUCKET,
+        Key = file_name,
+        Fields = {"acl": "public-read", "Content-Type": file_type},
+        Conditions = [
+            {"acl": "public-read"},
+            {"Content-Type": file_type}
+        ],
+        ExpiresIn = 3600
+    )
+
+    return json.dumps({
+        'data': presigned_post,
+        'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
+    })
 
 
 @app.route('/follow/<nickname>')

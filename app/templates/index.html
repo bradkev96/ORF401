@@ -31,6 +31,7 @@
             });
         </script>
         <div class="controls form-inline">
+
             <div class="control-group{% if form.destination.errors %} error{% endif %}">
                 <label class="control-label" for="destination">{{ _('Destination:') }}</label>
                 <div class="controls">
@@ -45,7 +46,7 @@
             </div>
 
             <div class="control-group{% if form.trip_date.errors %} error{% endif %}">
-                <label class="control-label" for="trip_date">{{ _('Date of Trip:') }}</label>
+                <label class="control-label" for="trip_date">{{ _('Date:') }}</label>
                 <div class="controls">
 
                     {{ form.trip_date(class="dtpick") }}
@@ -56,7 +57,7 @@
             </div>
 
             <div class="control-group{% if form.trip_time.errors %} error{% endif %}">
-                <label class="control-label" for="trip_time">{{ _('Time of Trip:') }}</label>
+                <label class="control-label" for="trip_time">{{ _('Time:') }}</label>
                 <div class="controls">
                     {{ form.trip_time(class="tpicker") }}
                     {% for error in form.trip_time.errors %}
@@ -68,7 +69,7 @@
 
 
             <div class="control-group{% if form.needRide.errors %} error{% endif %}">
-                <label class="control-label" for="needRide">{{ _('Do you need a car?') }}</label>
+                <label class="control-label" for="needRide">{{ _('Do you need or have a car?') }}</label>
                 <div class="controls">
                     {{ form.needRide() }}
                     {% for error in form.needRide.errors %}
@@ -77,7 +78,7 @@
                 </div>
             </div>
             <div class="control-group{% if form.seats.errors %} error{% endif %}">
-                <label class="control-label" for="seats">{{ _('How many seats are you offering (or in need of)?') }}</label>
+                <label class="control-label" for="seats">{{ _('How many seats do you need or have available?') }}</label>
                 <div class="controls">
                     {{ form.seats() }}
                     {% for error in form.seats.errors %}
@@ -86,7 +87,7 @@
                 </div>
             </div>
             <div class="control-group{% if form.body.errors %} error{% endif %}">
-                <label class="control-label" for="body">{{ _('What are you doing on your trip?') }}</label>
+                <label class="control-label" for="body">{{ _('Feel free to provide more information about your plans!') }}</label>
                 <div class="controls">
                     {{ form.body(size=30, maxlength=140) }}
                     {% for error in form.body.errors %}
@@ -104,7 +105,7 @@
             </div>
         </form>
     </div>
-    <h3>{{ _('Showing rides in your neighborhood:') }}</h3>
+    <h3>{{ _('Trips in your neighborhood:') }}</h3>
     {% for post in posts.items %}
         {% include 'post.html' %}
     {% endfor %}

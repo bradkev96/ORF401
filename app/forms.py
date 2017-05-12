@@ -1,9 +1,11 @@
 from flask_wtf import FlaskForm
 from flask_babel import gettext
 import wtforms
-from wtforms import StringField, BooleanField, TextAreaField, PasswordField, DateField, SelectField
+from wtforms import StringField, BooleanField, TextAreaField, PasswordField, DateField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Length, Required
 from wtforms.fields.html5 import EmailField
+from flask_wtf.file import FileField, FileRequired, FileAllowed
+from werkzeug.utils import secure_filename
 from flask_admin.form.fields import TimeField
 from flask_admin.form import widgets, DatePickerWidget
 #from .fieldwidgets import DatePickerWidget

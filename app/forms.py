@@ -1,20 +1,33 @@
 from flask_wtf import FlaskForm
 from flask_babel import gettext
-from wtforms import StringField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Length
+import wtforms
+from wtforms import StringField, BooleanField, TextAreaField, PasswordField, DateField, SelectField
+from wtforms.validators import DataRequired, Length, Required
+from wtforms.fields.html5 import EmailField
+from flask_admin.form.fields import TimeField
+from flask_admin.form import widgets, DatePickerWidget
+#from .fieldwidgets import DatePickerWidget
 from .models import User
 
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[DataRequired()])
-    password = StringField('password', validators=[DataRequired()])
+    email = EmailField('email', validators=[DataRequired(), wtforms.validators.Email("Please enter your email address.")])
+    password = PasswordField('password', validators=[DataRequired()])
     remember_me = BooleanField('remember_me', default=False)
 
 class SignUpForm(FlaskForm):
     name = StringField('name', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
-    password = StringField('password', validators=[DataRequired()])
+    email = EmailField('email', validators=[DataRequired(), wtforms.validators.Email("Please enter your email address.")])
+    password = PasswordField('password', validators=[DataRequired()])
+    address = StringField('address', validators=[DataRequired()])
+    city = StringField('city', validators=[DataRequired()])
+    state = StringField('state', validators=[DataRequired()])
+    zipcode = StringField('zipcode', validators=[DataRequired()])
     remember_me = BooleanField('remember_me', default=False)
+
+    #def validate_email(form, field):
+    #    if field.data < 13:
+    #        raise ValidationError("We're sorry, you must be 13 or older to register")
     
 class EditForm(FlaskForm):
     nickname = StringField('nickname', validators=[DataRequired()])
@@ -44,7 +57,12 @@ class EditForm(FlaskForm):
 
 
 class PostForm(FlaskForm):
-    post = StringField('post', validators=[DataRequired()])
+    destination = StringField('destination', validators=[DataRequired("Please tell us where you are going.")])
+    trip_date = DateField('TripDate', validators=[Required()], format = '%m/%d/%Y')
+    trip_time = TimeField('TripTime', validators=[Required()])
+    needRide = SelectField('needRide', validators=[Required()], choices=[('Need a ride','Need a ride'), ('Offering a ride','Offering a ride')],coerce=unicode, option_widget=None)
+    seats = SelectField('seats', validators=[Required()], choices=[(1,'1'),(2,'2'),(3,'3'),(4,'4'),(5,'5')], coerce=int, option_widget=None)
+    body = TextAreaField('body', validators=[DataRequired("Please tell us something about your trip."), Length(max=140)])
 
 
 class SearchForm(FlaskForm):

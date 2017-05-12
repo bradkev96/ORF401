@@ -25,6 +25,10 @@ class User(db.Model):
     nickname = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password = db.Column(db.String(120), index=True, unique=True)
+    address = db.Column(db.String(64), index=True)
+    city = db.Column(db.String(64), index=True)
+    state = db.Column(db.String(2), index=True)
+    zipcode = db.Column(db.Integer, index = True)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime)
@@ -96,10 +100,10 @@ class User(db.Model):
             followers.c.followed_id == user.id).count() > 0
 
     def followed_posts(self):
-        return Post.query.join(
-            followers, (followers.c.followed_id == Post.user_id)).filter(
-                followers.c.follower_id == self.id).order_by(
-                    Post.timestamp.desc())
+        return Post.query.join(followers, (followers.c.followed_id == Post.user_id)).filter(followers.c.follower_id == self.id).order_by(Post.timestamp.desc())
+
+    def neighborPosts(self):
+        return Post.query.filter(Post.user_zipcode == self.zipcode).order_by(Post.timestamp.desc())
 
     def __repr__(self):  # pragma: no cover
         return '<User %r>' % (self.nickname)
@@ -110,10 +114,16 @@ class Post(db.Model):
     __searchable__ = ['body']
 
     id = db.Column(db.Integer, primary_key=True)
+    destination = db.Column(db.String(120))
+    trip_date = db.Column(db.Date)
+    trip_time = db.Column(db.Time)
+    seats = db.Column(db.Integer)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_zipcode = db.Column(db.Integer)
     language = db.Column(db.String(5))
+    needRide = db.Column(db.Boolean)
 
     def __repr__(self):  # pragma: no cover
         return '<Post %r>' % (self.body)

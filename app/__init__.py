@@ -10,6 +10,7 @@ from config import ADMINS, MAIL_SERVER, MAIL_PORT, MAIL_USERNAME, \
     MAIL_PASSWORD
 from .momentjs import momentjs
 from flask_whooshee import Whooshee
+#from flask_widgets import Widgets
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -22,6 +23,7 @@ lm.login_message = lazy_gettext('Please log in to access this page.')
 mail = Mail(app)
 babel = Babel(app)
 whooshee = Whooshee(app)
+#widgets = Widgets(app)
 
 class CustomJSONEncoder(JSONEncoder):
     """This class adds support for lazy translation texts to Flask's

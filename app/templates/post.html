@@ -3,19 +3,36 @@
         <td width="70px"><a href="{{ url_for('user', nickname=post.author.nickname) }}"><img src="{{ post.author.avatar(70) }}" /></a></td>
         <td>
             {% autoescape false %}
-            <p>{{ _('%(nickname)s said %(when)s:', nickname='<a href="%s">%s</a>' % (url_for('user', nickname=post.author.nickname), post.author.nickname), when=momentjs(post.timestamp).fromNow()) }}</p>
+            <p>{{ _('%(when)s:' , when=momentjs(post.timestamp).fromNow() ) }}</p>
             {% endautoescape %}
-            <p><strong><span id="post{{ post.id }}">{{ post.body }}</span></strong></p>
-            {% if post.language != None and post.language != '' and post.language != g.locale %}
+
+
+            <!--<p>{{ _('%(nickname)s posted %(when)s:', nickname='<a href="%s">%s</a>' % (url_for('user', nickname=post.author.nickname), post.author.nickname), when=momentjs(post.timestamp).fromNow()) }}</p>-->
+
+
+            <p><strong><span id="destination{{ post.id }}">Destination: {{ post.destination }}</span></strong></p>
+            <p><span id="daytime{{ post.id }}">Day: {{ post.trip_date }}  Time: {{ post.trip_time }} </span></p>
+            {% if post.needRide %}
+            <p><span id="need{{ post.id }}">Looking for a ride with: <strong>{{ post.needRide }}</strong> seat(s)</span></p>
+            {% else %}
+            <p><span id="offer{{ post.id }}">Offering a ride with <strong>{{ post.needRide }}</strong> seat(s)</span></p>
+            {% endif %}
+            <p><span id="orig{{ post.id }}"><strong>Leaving from:</strong></span></p>
+            <p><span id="body{{ post.id }}"><strong>Description:</strong> {{ post.body }}</span></p>
+
+            <!--{% if post.language != None and post.language != '' and post.language != g.locale %}
             <div>
                 <span id="translation{{ post.id }}">
                     <a href="javascript:translate('{{ post.language }}', '{{ g.locale }}', '#post{{ post.id }}', '#translation{{ post.id }}', '#loading{{ post.id }}');">{{ _('Translate') }}</a>
                 </span>
                 <img id="loading{{ post.id }}" style="display: none" src="/static/img/loading.gif">
             </div>
-            {% endif %}
+            {% endif %}-->
             {% if post.author.id == g.user.id %}
             <div><a href="{{ url_for('delete', id = post.id) }}">{{ _('Delete') }}</a></div>
+            {% else %}
+            <input class="btn btn-primary" type="submit" value="{{ _('I would like to join your trip!') }}">
+            </div>
             {% endif %}
         </td>
     </tr>

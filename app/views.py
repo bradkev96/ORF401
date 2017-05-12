@@ -64,16 +64,22 @@ def internal_error(error):
 def index(page=1):
     form = PostForm()
     if form.validate_on_submit():
-        language = guessLanguage(form.post.data)
+        language = guessLanguage(form.body.data)
         if language == 'UNKNOWN' or len(language) > 5:
             language = ''
-        post = Post(body=form.post.data, timestamp=datetime.utcnow(),
-                    author=g.user, language=language)
+        if form.needRide.data == 'Need a ride':
+            needRide = True;
+        else:
+            needRide = False;
+        post = Post(destination=form.destination.data, seats=form.seats.data, needRide=needRide, trip_date=form.trip_date.data, trip_time=form.trip_time.data, body=form.body.data, timestamp=datetime.utcnow(),
+                    author=g.user, language=language, user_zipcode=g.user.zipcode)
+
+
         db.session.add(post)
         db.session.commit()
         flash(gettext('Your post is now live!'))
         return redirect(url_for('index'))
-    posts = g.user.followed_posts().paginate(page, POSTS_PER_PAGE, False)
+    posts = g.user.neighborPosts().paginate(page, POSTS_PER_PAGE, False)
     return render_template('index.html',
                            title='Home',
                            form=form,
@@ -151,7 +157,7 @@ def signUp():
                                title='Sign Up',
                                form=form)
             session['remember_me'] = form.remember_me.data
-            user = User(nickname=form.name.data,email=form.email.data,password=form.password.data) 
+            user = User(nickname=form.name.data,email=form.email.data,password=form.password.data, address=form.address.data, city=form.city.data, state=form.state.data, zipcode=form.zipcode.data) 
             user.authenticated = True
             db.session.add(user)
             db.session.commit()
@@ -159,7 +165,7 @@ def signUp():
             if succ:
                 db.session.add(user.follow(user))
                 db.session.commit()
-                flash('New user was created successfully!')
+                flash('Thank you for registering!')
                 next = request.args.get('next')
                 #if not is_safe_url(next):
                 #    return flask.abort(400)

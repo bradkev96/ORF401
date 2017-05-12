@@ -38,6 +38,7 @@ class User(db.Model):
                                secondaryjoin=(followers.c.followed_id == id),
                                backref=db.backref('followers', lazy='dynamic'),
                                lazy='dynamic')
+    avatar_url = db.Column(db.String(120))
 
     @staticmethod
     def make_valid_nickname(nickname):
@@ -81,9 +82,11 @@ class User(db.Model):
         except NameError:
             return str(self.id)  # python 3
 
-    def avatar(self, size):
-        return 'http://www.gravatar.com/avatar/%s?d=mm&s=%d' % \
-            (md5(self.email.encode('utf-8')).hexdigest(), size)
+    def avatar(self, size): # we don't actually use the "size" parameter
+        avatar_url = self.avatar_url
+        if avatar_url == "":
+            return "/static/img/default.png"
+        return avatar_url
 
     def follow(self, user):
         if not self.is_following(user):

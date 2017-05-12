@@ -32,6 +32,9 @@ class SignUpForm(FlaskForm):
 class EditForm(FlaskForm):
     nickname = StringField('nickname', validators=[DataRequired()])
     about_me = TextAreaField('about_me', validators=[Length(min=0, max=140)])
+    photo = FileField('photo', validators=[FileAllowed(['jpg', 'png'], 'Images only!')])
+    avatar_url = HiddenField('avatar_url')
+
 
     def __init__(self, original_nickname, *args, **kwargs):
         FlaskForm.__init__(self, *args, **kwargs)
